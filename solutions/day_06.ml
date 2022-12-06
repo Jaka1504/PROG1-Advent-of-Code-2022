@@ -1,36 +1,26 @@
-let prva_ponovitev1 vsebina =
+let prva_ponovitev_splosna n vsebina =
   let rec prva_ponovitev_aux acc niz =
-    if (String.length niz) < 4 then
+    if (String.length niz) < n then
       failwith "Niz prekratek"
     else
-      String.sub niz 0 4
+      let same_nule = String.make n '0' in
+      let dejanski_niz =
+      String.sub niz 0 n (* Pogleda prvih n characterjev*)
       |> String.mapi (
-        fun i ch -> ((String.contains (String.sub niz (i + 1) (3 - i)) ch) |> (function true -> '1' | false -> '0'))
-      )
-      |> function "0000" -> acc | _ -> prva_ponovitev_aux (acc + 1) (String.sub niz 1 ((String.length niz) - 1))
-  in
-  prva_ponovitev_aux 4 vsebina
-
-let prva_ponovitev2 vsebina =
-  let rec prva_ponovitev_aux acc niz =
-    if (String.length niz) < 14 then
-      failwith "Niz prekratek"
-    else
-      String.sub niz 0 14
-      |> String.mapi (
-        fun i ch -> ((String.contains (String.sub niz (i + 1) (13 - i)) ch) |> (function true -> '1' | false -> '0'))
-      )
-      |> function "00000000000000" -> acc | _ -> prva_ponovitev_aux (acc + 1) (String.sub niz 1 ((String.length niz) - 1))
-  in
-  prva_ponovitev_aux 14 vsebina
-
+        fun i ch -> ((String.contains (String.sub niz (i + 1) (n - 1 - i)) ch) |> (function true -> '1' | false -> '0'))
+      ) (* za vsakega preveri ali se še kdaj pojavi kasneje *)
+      in if dejanski_niz = same_nule then
+        acc (* če se ne, smo konec *)
+      else
+        prva_ponovitev_aux (acc + 1) (String.sub niz 1 ((String.length niz) - 1)) (* če se, pogledamo naslednji niz dolžine n *)
+  in prva_ponovitev_aux n vsebina
 
 let naloga1 vsebina_datoteke = vsebina_datoteke
-  |> prva_ponovitev1
+  |> prva_ponovitev_splosna 4
   |> string_of_int
 
 let naloga2 vsebina_datoteke = vsebina_datoteke
-  |> prva_ponovitev2
+  |> prva_ponovitev_splosna 14
   |> string_of_int
 
 let _ =
